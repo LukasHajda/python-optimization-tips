@@ -66,18 +66,37 @@ In this example, using a slotted class leads to an approximate **37% reduction**
 
 ## Garbage Collection Threshold Optimization
 
-Python’s built-in garbage collector (GC) manages memory by periodically cleaning up unused objects. In applications that generate many short-lived objects, adjusting the GC thresholds can help reduce pauses and improve overall performance.
+Python’s built-in garbage collector (GC) periodically frees unused memory by cleaning up unreachable objects. For applications that generate a large number of short-lived objects, tuning the GC thresholds can help reduce collection frequency, thereby minimizing pause times and enhancing performance.
 
 ### Viewing and Adjusting GC Thresholds
 
-The garbage collector operates with three generations (0, 1, and 2), each with its own collection threshold. You can inspect and modify these thresholds as shown below:
+The garbage collector manages memory in three generations (0, 1, and 2), each with its own threshold that determines when collection occurs. You can inspect and modify these thresholds as demonstrated below:
 
 ```python
 import gc
 
-# View current GC thresholds (generation 0, 1, and 2)
+# Perform a full collection of generation 2
+gc.collect(2)
+
+# Display current GC thresholds (default values are typically 700, 10, 10)
 print(gc.get_threshold())
 
-# Adjust thresholds to control collection frequency
-gc.set_threshold(700, 10, 10)
+# Adjust thresholds to increase collection intervals
+gc.set_threshold(10_000, 20, 20)
+```
+### Advantages
+
+- **Reduced GC overhead:** Increasing thresholds decreases the frequency of garbage collection, which can reduce the performance impact of GC pauses.
+- **Improved performance in high-allocation workloads:** Especially beneficial for applications with rapid creation and disposal of many short-lived objects.
+- **Fine-grained control:** Allows tuning of memory management to better match application-specific behavior and resource constraints.
+
+### Disadvantages
+
+- **Increased memory usage:** Delaying garbage collection may cause higher memory consumption as unused objects remain longer before being collected.
+- **Risk of memory leaks:** Improper tuning or disabling GC can cause memory leaks if unreachable objects are not collected promptly.
+- **Requires careful profiling:** Without profiling, threshold adjustments may degrade performance rather than improve it.
+
+> **Note:** There is no universal or "magic" formula for tuning garbage collection thresholds. Optimal settings vary depending on the application's workload and behavior. It is essential to profile and test your specific application to determine the best configuration.
+
+For a detailed discussion, see [Michael Kennedy's article](https://mkennedy.codes/posts/python-gc-settings-change-this-and-make-your-app-go-20pc-faster/).
 
