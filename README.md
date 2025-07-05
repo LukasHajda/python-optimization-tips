@@ -84,6 +84,66 @@ print(gc.get_threshold())
 # Adjust thresholds to increase collection intervals
 gc.set_threshold(10_000, 20, 20)
 ```
+
+This example demonstrates the impact of Python’s garbage collector (GC) on an application that creates a large number of short-lived objects. The code measures the runtime of object creation under different GC settings, illustrating how tuning GC thresholds can affect performance.
+
+## Code Overview
+
+```python
+import gc
+import time
+
+class MyObject:
+    def __init__(self, value):
+        self.value = value
+
+def create_objects(n):
+    objs = []
+    for i in range(n):
+        objs.append(MyObject(i))
+    return objs
+
+# Number of objects to create
+N = 5_000_000
+```
+
+This code benchmarks the runtime of creating a large number of objects (`N = 5,000,000`) under different garbage collection (GC) configurations to illustrate the performance impact of tuning GC thresholds.
+
+```python
+# Run with default GC thresholds
+gc.collect()
+start_default = time.time()
+create_objects(N)
+end_default = time.time()
+default_duration = end_default - start_default
+
+print(f"Runtime with default GC thresholds: {default_duration:.4f} seconds")
+
+# Tune GC thresholds to reduce collection frequency
+gc.set_threshold(10_000, 50, 50)
+
+gc.collect()
+start_tuned = time.time()
+create_objects(N)
+end_tuned = time.time()
+tuned_duration = end_tuned - start_tuned
+
+print(f"Runtime with tuned GC thresholds: {tuned_duration:.4f} seconds
+```
+
+## Performance Comparison of Garbage Collection Thresholds
+
+| GC Thresholds (gen0, gen1, gen2) | Approximate Runtime (seconds) |
+|----------------------------------|-------------------------------|
+| 700, 10, 10                     | 3.4186                        |
+| 10,000, 20, 20                  | 2.4594                        |
+| 10,000, 50, 50                  | 2.0037                        |
+| 50,000, 50, 50                  | 1.9703                        |
+
+*Note: Runtimes represent the duration to create 5,000,000 objects in a test environment. Actual results may vary depending on hardware and workload.*
+
+
+
 ### Advantages
 
 - **Reduced GC overhead:** Increasing thresholds decreases the frequency of garbage collection, which can reduce the performance impact of GC pauses.
