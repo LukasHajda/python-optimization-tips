@@ -158,7 +158,7 @@ print(f"Runtime with tuned GC thresholds: {tuned_duration:.4f} seconds
 
 For a detailed discussion, see [Michael Kennedy's article](https://mkennedy.codes/posts/python-gc-settings-change-this-and-make-your-app-go-20pc-faster/).
 
-## Traditional loop vs list comprehension
+## Comparing List Comprehensions and Traditional Loops
 One common Python optimization technique is replacing traditional for loops with list comprehensions. List comprehensions are generally faster and more concise, especially when you're building new lists.
 
 ```python
