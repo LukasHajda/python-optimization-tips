@@ -7,8 +7,9 @@ This repository presents practical techniques and illustrative examples to enhan
 - [Using `__slots__` to Reduce Memory Consumption](#using-__slots__-to-reduce-memory-consumption)
 - [Optimizing Garbage Collection Thresholds](#optimizing-garbage-collection-thresholds)
 - [Comparing List Comprehensions and Traditional Loops](#comparing-list-comprehensions-and-traditional-loops)
-- [Leveraging Built-in Functions and Generators](#leveraging-built-in-functions-and-generators)
+- [Comparing deque and list](#comparing-deque-and-list)
 - [Local Variable Access Optimization](#local-variable-access-optimization)
+- [Leveraging Built-in Functions and Generators](#leveraging-built-in-functions-and-generators)
 - [Efficient String Concatenation Methods](#efficient-string-concatenation-methods)
 - [Using `set` for Fast Membership Testing](#using-set-for-fast-membership-testing)
 
