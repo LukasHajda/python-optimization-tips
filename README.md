@@ -225,3 +225,57 @@ print(f"Comprehension loop time: {time.time() - start:.4f} seconds")
 | 70,000,000   | 4.0457               | 2.7963                   | 30.88%         |
 
 List comprehensions consistently outperform traditional loops by 30–35%, making them a strong choice for large-scale data generation tasks where simplicity and speed matter.
+
+## Local Variable Access Optimization
+In Python, accessing local variables is faster than accessing global variables or attributes. Python’s interpreter resolves local variables more efficiently because they are stored in an internal structure that is quicker to look up (like a C array under the hood).
+
+```python
+import time
+import math
+
+def use_global(n):
+    for _ in range(n):
+        val = math.pi * 2
+
+def use_local(n):
+    local_pi = math.pi
+    for _ in range(n):
+        val = local_pi * 2
+
+N = 30_000_000
+
+# Global variable access benchmark
+start = time.time()
+use_global(N)
+end = time.time()
+print(f"Global access time: {end - start:.4f} seconds")
+
+# Local variable access benchmark
+start = time.time()
+use_local(N)
+end = time.time()
+print(f"Local access time:  {end - start:.4f} seconds")
+```
+
+### Advantages
+
+- ✅ Faster access to variables (especially in tight loops).  
+- ✅ Better performance in functions that access the same variable many times.  
+- ✅ Encourages encapsulation and cleaner function scopes.  
+
+### Disadvantages
+
+- ❌ Requires manual refactoring to copy global values into locals.  
+- ❌ May clutter code with unnecessary assignments if misused.  
+- ❌ Minimal gain in functions with few variable lookups or outside of tight loops.
+
+### 📊 Benchmark: Global vs Local Variable Access
+
+| N (Elements) | Global Access (s) | Local Access (s) | % Improvement |
+|--------------|-------------------|------------------|---------------|
+| 10,000,000   | 0.5725            | 0.3575           | 37.55%        |
+| 20,000,000   | 1.3555            | 0.7128           | 47.40%        |
+| 30,000,000   | 1.8159            | 1.1028           | 39.28%        |
+
+This benchmark clearly shows that local variable access in Python is consistently faster than accessing variables globally, with improvements ranging roughly between **37% to 47%** in our tests
+
