@@ -75,8 +75,8 @@ The garbage collector manages memory in three generations (0, 1, and 2), each wi
 ```python
 import gc
 
-# Perform a full collection of generation 2
-gc.collect(2)
+# Perform a full collection
+gc.collect()
 
 # Display current GC thresholds (default values are typically 700, 10, 10)
 print(gc.get_threshold())
