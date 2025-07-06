@@ -54,15 +54,15 @@ In this example, using a slotted class leads to an approximate **37% reduction**
 
 ### Advantages
 
-- **Reduced memory usage:** Eliminates per-instance `__dict__`, significantly decreasing memory consumption.
-- **Faster attribute access:** Fixed attribute layout enables quicker lookups.
-- **Enhanced performance:** Particularly effective when creating large numbers of instances.
+- ✅ **Reduced memory usage:** Eliminates per-instance `__dict__`, significantly decreasing memory consumption.
+- ✅ **Faster attribute access:** Fixed attribute layout enables quicker lookups.
+- ✅ **Enhanced performance:** Particularly effective when creating large numbers of instances.
 
 ### Disadvantages
 
-- **Limited flexibility:** Attributes cannot be added dynamically beyond those specified in `__slots__`.
-- **Inheritance constraints:** Subclasses must also define `__slots__` to maintain memory benefits.
-- **Compatibility issues:** Some libraries or frameworks that rely on dynamic attribute assignment may not function properly.
+- ❌ **Limited flexibility:** Attributes cannot be added dynamically beyond those specified in `__slots__`.
+- ❌ **Inheritance constraints:** Subclasses must also define `__slots__` to maintain memory benefits.
+- ❌ **Compatibility issues:** Some libraries or frameworks that rely on dynamic attribute assignment may not function properly.
 
 ## Garbage Collection Threshold Optimization
 
@@ -142,21 +142,86 @@ print(f"Runtime with tuned GC thresholds: {tuned_duration:.4f} seconds
 
 *Note: Runtimes represent the duration to create 5,000,000 objects in a test environment. Actual results may vary depending on hardware and workload.*
 
-
-
 ### Advantages
 
-- **Reduced GC overhead:** Increasing thresholds decreases the frequency of garbage collection, which can reduce the performance impact of GC pauses.
-- **Improved performance in high-allocation workloads:** Especially beneficial for applications with rapid creation and disposal of many short-lived objects.
-- **Fine-grained control:** Allows tuning of memory management to better match application-specific behavior and resource constraints.
+- ✅ **Reduced GC overhead:** Increasing thresholds decreases the frequency of garbage collection, which can reduce the performance impact of GC pauses.
+- ✅ **Improved performance in high-allocation workloads:** Especially beneficial for applications with rapid creation and disposal of many short-lived objects.
+- ✅ **Fine-grained control:** Allows tuning of memory management to better match application-specific behavior and resource constraints.
 
 ### Disadvantages
 
-- **Increased memory usage:** Delaying garbage collection may cause higher memory consumption as unused objects remain longer before being collected.
-- **Risk of memory leaks:** Improper tuning or disabling GC can cause memory leaks if unreachable objects are not collected promptly.
-- **Requires careful profiling:** Without profiling, threshold adjustments may degrade performance rather than improve it.
+- ❌ **Increased memory usage:** Delaying garbage collection may cause higher memory consumption as unused objects remain longer before being collected.
+- ❌ **Risk of memory leaks:** Improper tuning or disabling GC can cause memory leaks if unreachable objects are not collected promptly.
+- ❌ **Requires careful profiling:** Without profiling, threshold adjustments may degrade performance rather than improve it.
 
 > **Note:** There is no universal or "magic" formula for tuning garbage collection thresholds. Optimal settings vary depending on the application's workload and behavior. It is essential to profile and test your specific application to determine the best configuration.
 
 For a detailed discussion, see [Michael Kennedy's article](https://mkennedy.codes/posts/python-gc-settings-change-this-and-make-your-app-go-20pc-faster/).
 
+## Traditional loop vs list comprehension
+One common Python optimization technique is replacing traditional for loops with list comprehensions. List comprehensions are generally faster and more concise, especially when you're building new lists.
+
+```python
+import time
+
+N = 35_000_000
+
+def traditional_loop(n):
+    squares_loop = []
+    for i in range(n):
+        squares_loop.append(i)
+
+def comprehension_loop(n):
+    squares_comp = [i for i in range(n)]
+
+# Traditional loop benchmark
+start = time.time()
+traditional_loop(N)
+print(f"Traditional loop time: {time.time() - start:.4f} seconds")
+
+# List comprehension benchmark
+start = time.time()
+comprehension_loop(N)
+print(f"Comprehension loop time: {time.time() - start:.4f} seconds")
+```
+### List Comprehensions
+
+#### Advantages
+
+- ✅ **Faster execution:** Compiled into optimized C code under the hood.
+- ✅ **More concise:** Less code for simple list transformations.
+- ✅ **Improved readability** for straightforward operations.
+- ✅ **Functional-style syntax** encourages declarative thinking.
+
+#### Disadvantages
+
+- ❌ **Hard to read** with complex logic or nested conditions.
+- ❌ **No side effects allowed** (e.g. printing or logging inside the expression).
+- ❌ **May use more memory** if not careful (vs. generators).
+
+---
+
+### Traditional For Loops
+
+#### Advantages
+
+- ✅ **Clearer for complex logic**, multiple operations, or side-effects.
+- ✅ **Easier to debug** and maintain line-by-line.
+- ✅ **Flexible for conditional branching**, logging, or interacting with other parts of a program.
+
+#### Disadvantages
+
+- ❌ **Slower** due to method calls (e.g., `.append()`) in Python-level code.
+- ❌ **More verbose**, especially for simple operations.
+- ❌ **Slightly less efficient** in tight performance-critical loops.
+
+### 📊 Benchmark: Traditional Loop vs List Comprehension
+
+| N (Elements) | Traditional Loop (s) | List Comprehension (s) | % Improvement |
+|--------------|----------------------|--------------------------|----------------|
+| 15,000,000   | 0.8969               | 0.5821                   | 35.09%         |
+| 25,000,000   | 1.4530               | 1.0087                   | 30.59%         |
+| 35,000,000   | 2.0529               | 1.3764                   | 32.96%         |
+| 70,000,000   | 4.0457               | 2.7963                   | 30.88%         |
+
+List comprehensions consistently outperform traditional loops by 30–35%, making them a strong choice for large-scale data generation tasks where simplicity and speed matter.
