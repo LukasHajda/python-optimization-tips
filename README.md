@@ -64,7 +64,7 @@ In this example, using a slotted class leads to an approximate **37% reduction**
 - ❌ **Inheritance constraints:** Subclasses must also define `__slots__` to maintain memory benefits.
 - ❌ **Compatibility issues:** Some libraries or frameworks that rely on dynamic attribute assignment may not function properly.
 
-## Garbage Collection Threshold Optimization
+## Optimizing Garbage Collection Thresholds
 
 Python’s built-in garbage collector (GC) periodically frees unused memory by cleaning up unreachable objects. For applications that generate a large number of short-lived objects, tuning the GC thresholds can help reduce collection frequency, thereby minimizing pause times and enhancing performance.
 
