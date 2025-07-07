@@ -324,3 +324,51 @@ print(f"Preallocated assignment: {prealloc_time:.4f} sec")
 ### 🧠 Insight
 
 Preallocating a list reduces the need for dynamic memory resizing during appends, which can result in performance gains of **40–46%** in large-scale list construction. While the absolute time saved may not be significant for small workloads, this optimization becomes more impactful as the number of elements grows.
+
+## Leveraging Generators for Memory Efficiency
+This example demonstrates the difference in memory usage between list comprehensions and generator expressions in Python.
+
+## Overview
+
+- **List comprehension** creates an entire list in memory immediately, which can consume significant memory for large datasets.
+
+- **Generator expression** produces items one at a time, generating values on-the-fly without storing the entire sequence in memory. This leads to much lower memory consumption, especially beneficial for processing large or infinite sequences.
+
+```python
+import tracemalloc
+
+N = 1_000_000
+
+# Profile list comprehension (creates full list in memory)
+tracemalloc.start()
+lst = [x * x for x in range(N)]
+current, peak = tracemalloc.get_traced_memory()
+print(f"List comprehension — Current memory usage: {current / 1024**2:.2f} MB; Peak: {peak / 1024**2:.2f} MB")
+tracemalloc.stop()
+
+# Profile generator expression (lazy evaluation, low memory)
+tracemalloc.start()
+gen = (x * x for x in range(N))
+total = sum(gen)  # Consume generator to measure memory use
+current, peak = tracemalloc.get_traced_memory()
+print(f"Generator expression — Current memory usage: {current / 1024**2:.2f} MB; Peak: {peak / 1024**2:.2f} MB")
+tracemalloc.stop()
+```
+
+## Memory Usage Comparison
+
+| Method               | Memory Usage       |
+|----------------------|--------------------|
+| List Comprehension   | 38.45 MB           |
+| Generator Expression | Less than 1 MB     |
+
+### Advantages
+- ✅ **Reduced memory usage:** Generators only keep one item in memory at a time.
+- ✅ **Suitable for large datasets:** Can process sequences too large to fit in memory.
+- ✅ **Lazy evaluation:** Values are generated only as needed, improving performance in many cases.
+
+### Disadvantages
+- **Single iteration:** Generators can only be iterated once.
+- **No random access:** Unlike lists, you cannot index or slice generators.
+- **Slightly more complex code:** Sometimes requires more careful handling (e.g., converting to list if needed multiple times).
+
