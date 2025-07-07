@@ -136,7 +136,7 @@ print(f"Runtime with tuned GC thresholds: {tuned_duration:.4f} seconds
 
 | GC Thresholds (gen0, gen1, gen2) | Approximate Runtime (seconds) |
 |----------------------------------|-------------------------------|
-| 700, 10, 10                     | 3.4186                        |
+| 700, 10, 10 (default)                   | 3.4186                        |
 | 10,000, 20, 20                  | 2.4594                        |
 | 10,000, 50, 50                  | 2.0037                        |
 | 50,000, 50, 50                  | 1.9703                        |
