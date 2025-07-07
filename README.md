@@ -407,3 +407,50 @@ The table below shows benchmark results for summing `N` elements using a custom 
 
 **Note:** Typically, built-in functions are expected to outperform custom implementations due to their C-level optimizations. However, these results show some irregularities possibly due to system load, caching, or test setup variations. Always benchmark on your own workload and environment for reliable conclusions.
 
+## Efficient String Concatenation Methods
+String concatenation can become a performance bottleneck, especially in large loops or data processing tasks.
+
+```python
+import time
+from io import StringIO
+
+words = ["abc"] * 1_000_000
+
+# Naive +
+start = time.time()
+s = ""
+for w in words:
+    s += w
+print("Using +:", time.time() - start)
+
+# ''.join
+start = time.time()
+s = "".join(words)
+print("Using join:", time.time() - start)
+
+# StringIO
+start = time.time()
+buf = StringIO()
+for w in words:
+    buf.write(w)
+s = buf.getvalue()
+print("Using StringIO:", time.time() - start)
+```
+### 📌 Why It Matters
+
+- `+` in loop is **O(n²)** — each iteration copies the entire string again.
+- `join()` is **O(n)** — memory is allocated once and filled efficiently.
+- `StringIO` acts like a **mutable string buffer**, great for building strings dynamically.
+
+### 🧪 String Concatenation Performance Benchmark
+
+Concatenating `"abc"` strings with different methods:
+
+| N Elements   | `+` in Loop (s) | `''.join()` (s) | `StringIO` (s) |
+|--------------|------------------|------------------|----------------|
+| 1,000,000    | 0.6497           | 0.0120           | 0.1213         |
+| 5,000,000    | 8.1871           | 0.0439           | 0.6239         |
+| 15,000,000   | 49.1197          | 0.0731           | 1.1418         |
+
+
+
