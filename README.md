@@ -368,7 +368,7 @@ tracemalloc.stop()
 - ✅ **Lazy evaluation:** Values are generated only as needed, improving performance in many cases.
 
 ### Disadvantages
-- **Single iteration:** Generators can only be iterated once.
-- **No random access:** Unlike lists, you cannot index or slice generators.
-- **Slightly more complex code:** Sometimes requires more careful handling (e.g., converting to list if needed multiple times).
+- ❌ **Single iteration:** Generators can only be iterated once.
+- ❌ **No random access:** Unlike lists, you cannot index or slice generators.
+- ❌ **Slightly more complex code:** Sometimes requires more careful handling (e.g., converting to list if needed multiple times).
 
