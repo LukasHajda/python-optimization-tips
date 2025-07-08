@@ -416,8 +416,8 @@ The table below shows benchmark results for summing `N` elements using a custom 
 | N Elements    | Custom Function (sec) | Built-in sum() (sec) |
 |---------------|----------------------|---------------------|
 | 10,000,000    | 0.8435               | 0.1819              |
-| 30,000,000    | 0.5510               | 2.3465              |
-| 50,000,000    | 0.9115               | 4.4152              |
+| 30,000,000    | 2.3465               | 0.5510              |
+| 50,000,000    | 4.4152               | 0.9115              |
 
 **Note:** Typically, built-in functions are expected to outperform custom implementations due to their C-level optimizations. However, these results show some irregularities possibly due to system load, caching, or test setup variations. Always benchmark on your own workload and environment for reliable conclusions.
 
