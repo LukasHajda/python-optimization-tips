@@ -335,7 +335,7 @@ print(f"Preallocated assignment: {prealloc_time:.4f} sec")
 
 Preallocating a list reduces the need for dynamic memory resizing during appends, which can result in performance gains of **40–46%** in large-scale list construction. While the absolute time saved may not be significant for small workloads, this optimization becomes more impactful as the number of elements grows.
 
-## Leveraging Generators for Memory Efficiency
+## Leveraging Built-in Functions and Generators
 This example demonstrates the difference in memory usage between list comprehensions and generator expressions in Python.
 
 ## Overview
