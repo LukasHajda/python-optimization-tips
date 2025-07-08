@@ -19,6 +19,8 @@ This repository presents practical techniques and illustrative examples to enhan
 
 The `__slots__` construct can be employed in class definitions to avoid the per-instance `__dict__`, thereby minimizing memory overhead when instantiating many objects.
 
+## Code Overview
+
 ```python
 from pympler import asizeof
 
@@ -110,6 +112,8 @@ N = 5_000_000
 
 This code benchmarks the runtime of creating a large number of objects (`N = 5,000,000`) under different garbage collection (GC) configurations to illustrate the performance impact of tuning GC thresholds.
 
+## Code Overview
+
 ```python
 # Run with default GC thresholds
 gc.collect()
@@ -132,7 +136,7 @@ tuned_duration = end_tuned - start_tuned
 print(f"Runtime with tuned GC thresholds: {tuned_duration:.4f} seconds
 ```
 
-## Performance Comparison of Garbage Collection Thresholds
+## 📊 Performance Comparison of Garbage Collection Thresholds
 
 | GC Thresholds (gen0, gen1, gen2) | Approximate Runtime (seconds) |
 |----------------------------------|-------------------------------|
@@ -161,6 +165,8 @@ For a detailed discussion, see [Michael Kennedy's article](https://mkennedy.code
 
 ## Comparing List Comprehensions and Traditional Loops
 One common Python optimization technique is replacing traditional for loops with list comprehensions. List comprehensions are generally faster and more concise, especially when you're building new lists.
+
+## Code Overview
 
 ```python
 import time
@@ -230,6 +236,8 @@ List comprehensions consistently outperform traditional loops by 30–35%, makin
 ## Local Variable Access Optimization
 In Python, accessing local variables is faster than accessing global variables or attributes. Python’s interpreter resolves local variables more efficiently because they are stored in an internal structure that is quicker to look up (like a C array under the hood).
 
+## Code Overview
+
 ```python
 import time
 import math
@@ -285,6 +293,8 @@ Preallocating a list by creating it with a fixed size (e.g. `[0] * N`) can offer
 
 While this optimization is generally **not critical** and often results in **negligible gains** for most real-world applications, it’s an interesting detail that can be worth considering in tight loops or large-scale numerical tasks. It’s more of a micro-optimization than a game-changer—but useful to know when squeezing out every bit of performance.
 
+## Code Overview
+
 ```python
 import time
 
@@ -334,6 +344,8 @@ This example demonstrates the difference in memory usage between list comprehens
 
 - **Generator expression** produces items one at a time, generating values on-the-fly without storing the entire sequence in memory. This leads to much lower memory consumption, especially beneficial for processing large or infinite sequences.
 
+## Code Overview
+
 ```python
 import tracemalloc
 
@@ -355,7 +367,7 @@ print(f"Generator expression — Current memory usage: {current / 1024**2:.2f} M
 tracemalloc.stop()
 ```
 
-## Memory Usage Comparison
+## 📊 Memory Usage Comparison
 
 | Method               | Memory Usage       |
 |----------------------|--------------------|
@@ -374,6 +386,8 @@ tracemalloc.stop()
 
 ## Leveraging Built-in Functions for Performance
 Python’s built-in functions are implemented in optimized C code, providing faster execution and often better memory efficiency than equivalent Python loops.
+
+## Code Overview
 
 ```python
 import time
@@ -395,7 +409,7 @@ for x in data:
 end = time.time()
 print(f"Manual loop sum took {end - start:.4f} seconds")
 ```
-### Performance Comparison: Custom Function vs Built-in `sum()`
+### 📊 Performance Comparison: Custom Function vs Built-in `sum()`
 
 The table below shows benchmark results for summing `N` elements using a custom Python function versus Python’s built-in `sum()` function.
 
@@ -409,6 +423,8 @@ The table below shows benchmark results for summing `N` elements using a custom 
 
 ## Efficient String Concatenation Methods
 String concatenation can become a performance bottleneck, especially in large loops or data processing tasks.
+
+## Code Overview
 
 ```python
 import time
@@ -436,13 +452,14 @@ for w in words:
 s = buf.getvalue()
 print("Using StringIO:", time.time() - start)
 ```
+
 ### 📌 Why It Matters
 
 - `+` in loop is **O(n²)** — each iteration copies the entire string again.
 - `join()` is **O(n)** — memory is allocated once and filled efficiently.
 - `StringIO` acts like a **mutable string buffer**, great for building strings dynamically.
 
-### 🧪 String Concatenation Performance Benchmark
+### 📊 String Concatenation Performance Benchmark
 
 Concatenating `"abc"` strings with different methods:
 
@@ -452,5 +469,62 @@ Concatenating `"abc"` strings with different methods:
 | 5,000,000    | 8.1871           | 0.0439           | 0.6239         |
 | 15,000,000   | 49.1197          | 0.0731           | 1.1418         |
 
+## Using `set` for Fast Membership Testing
+When checking whether a value exists in a collection, `set` is significantly faster than `list` — especially as the number of elements grows.
+
+- **`list`** membership testing is **O(n)** — it scans each element until it finds a match.
+- **`set`** membership testing is **O(1)** on average — thanks to its underlying hash table.
+
+## Code Overview
+
+```python
+import random
+import string
+import time
+
+N = 8_000_000
+
+def random_string(length = 30):
+    return ''.join(random.choices(string.ascii_letters + string.digits, k = length))
+
+def generate_unique_strings(n = N):
+    strings = set()
+    while len(strings) < n:
+        strings.add(random_string())
+    return list(strings)
 
 
+random_strings_list = generate_unique_strings()
+random_strings_set = set(random_strings_list)
+
+existing = random_strings_list[-1] # Last value
+
+# List lookup
+start = time.time()
+_ = existing in random_strings_list
+print(f"List: {time.time() - start:.4f} seconds")
+
+# Set lookup
+start = time.time()
+_ = existing in random_strings_set
+print(f"Set:  {time.time() - start:.4f} seconds")
+```
+
+### 📊 Membership Testing: Last Inserted Element
+This benchmark compares how long it takes to check for the last inserted string in both a list and a set of various sizes:
+| N-Elements   | List Lookup Time (s) | Set Lookup Time (s) |
+|--------------|-----------------------|----------------------|
+| 1,000,000    | 0.0610                | ~0.00001               |
+| 3,000,000    | 0.1900                | ~0.00001               |
+| 8,000,000    | 0.5780                | ~0.00001               |
+
+### Advantages of `set`
+- ✅ **Near-instant lookup time:** Average case O(1) complexity.
+- ✅ **Automatic removal of duplicates:** Ensures unique elements.
+- ✅ **Ideal for large datasets:** Efficient for frequent membership testing.
+
+### Limitations of `set`
+- ❌ **Unordered:** No guaranteed element order during iteration.
+- ❌ **No duplicates allowed:** Cannot store repeated values.
+- ❌ **Hashable only:** Elements must be immutable and hashable.
+- ❌ **Higher memory usage:** Uses more memory than lists for the same elements.
